@@ -3,6 +3,7 @@ const sequelize = require('../config/sequelize');
 
 const Consumer = require('./consumer')(sequelize, DataTypes);
 const Restaurant = require('./restaurant')(sequelize, DataTypes);
+const Dish = require('./dish')(sequelize, DataTypes);
 
 sequelize.sync()
     .then(() => console.log("Database synchronized"))
@@ -12,4 +13,5 @@ module.exports = {
     sequelize,
     Consumer,
     Restaurant,
+    Dish
 };
