@@ -46,5 +46,5 @@ module.exports = (sequelize, DataTypes) => {
     return Dish;
 };
 
-Restaurant.hasMany(Dish, { foreignKey: 'restaurantId' });
-Dish.belongsTo(Restaurant, { foreignKey: 'restaurantId' });
+// Restaurant.hasMany(Dish, { foreignKey: 'restaurantId' });
+// Dish.belongsTo(Restaurant, { foreignKey: 'restaurantId' });
