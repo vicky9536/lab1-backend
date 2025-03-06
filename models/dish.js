@@ -1,9 +1,12 @@
 'use strict';
 const { Model } = require('sequelize');
-const { Restaurant } = require('.');
+const Restaurant = require('./restaurant');
 
 module.exports = (sequelize, DataTypes) => {
     class Dish extends Model {}
+
+    //Restaurant.hasMany(Dish, { foreignKey: 'restaurantId' });
+    //Dish.belongsTo(Restaurant, { foreignKey: 'restaurantId' });
 
     Dish.init({
         id: {
@@ -43,8 +46,10 @@ module.exports = (sequelize, DataTypes) => {
     }
     );
 
+    Dish.associate = (models) => {
+        Dish.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' });
+    };
+
     return Dish;
 };
 
-// Restaurant.hasMany(Dish, { foreignKey: 'restaurantId' });
-// Dish.belongsTo(Restaurant, { foreignKey: 'restaurantId' });

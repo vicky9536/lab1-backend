@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
-const  { Consumer } = require('.');
-const { Restaurant } = require('.');
+const Consumer = require('./consumer');
+const Restaurant = require('./restaurant');
 
 module.exports = (sequelize, DataTypes) => {
     class Order extends Model {}
@@ -54,8 +54,8 @@ module.exports = (sequelize, DataTypes) => {
     return Order;
 };
 
-// Restaurant.hasMany(Order, { foreignKey: 'restaurant_id' });
-// Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
+Restaurant.hasMany(Order, { foreignKey: 'restaurant_id' });
+Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
 
-// Consumer.hasMany(Order, { foreignKey: 'consumer_id' });
-// Order.belongsTo(Consumer, { foreignKey: 'consumer_id' });
+Consumer.hasMany(Order, { foreignKey: 'consumer_id' });
+Order.belongsTo(Consumer, { foreignKey: 'consumer_id' });
