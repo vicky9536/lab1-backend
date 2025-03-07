@@ -50,5 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     }
     );
 
+    Restaurant.associate = (models) => {
+        Restaurant.hasMany(models.Dish, { foreignKey: 'restaurantId' });
+        Restaurant.hasMany(models.Order, { foreignKey: 'restaurantId' });
+    };
+
     return Restaurant;
 };

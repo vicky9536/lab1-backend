@@ -36,10 +36,15 @@ module.exports = (sequelize, DataTypes) => {
     }
     );
 
+    Favorite.associate = (models) => {
+        Favorite.belongsTo(models.Consumer, { foreignKey: 'consumerId' });
+        Favorite.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' });
+    };
+
     return Favorite;
 };
 
-Favorite.belongsTo(Consumer, { foreignKey: 'consumerId' });
-Consumer.hasMany(Favorite, { foreignKey: 'consumerId' });
+//Favorite.belongsTo(Consumer, { foreignKey: 'consumerId' });
+//Consumer.hasMany(Favorite, { foreignKey: 'consumerId' });
 
-Favorite.belongsTo(Restaurant, { foreignKey: 'restaurantId' });
+//Favorite.belongsTo(Restaurant, { foreignKey: 'restaurantId' });

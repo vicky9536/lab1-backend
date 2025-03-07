@@ -40,11 +40,16 @@ module.exports = (sequelize, DataTypes) => {
     }
     );
 
+    Cart.associate = (models) => {
+        Cart.belongsTo(models.Consumer, { foreignKey: 'consumerId' });
+        Cart.belongsTo(models.Dish, { foreignKey: 'dishId' });
+    };
+
     return Cart;
 };
 
-Consumer.hasMany(Cart, { foreignKey: 'consumerId' });
-Cart.belongsTo(Consumer, { foreignKey: 'consumerId' });
+//Consumer.hasMany(Cart, { foreignKey: 'consumerId' });
+//Cart.belongsTo(Consumer, { foreignKey: 'consumerId' });
 
-Dish.hasMany(Cart, { foreignKey: 'dishId' });
-Cart.belongsTo(Dish, { foreignKey: 'dishId' });
+//Dish.hasMany(Cart, { foreignKey: 'dishId' });
+//Cart.belongsTo(Dish, { foreignKey: 'dishId' });

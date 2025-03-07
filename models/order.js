@@ -51,11 +51,16 @@ module.exports = (sequelize, DataTypes) => {
     }
     );
 
+    Order.associate = (models) => {
+        Order.belongsTo(models.Restaurant, { foreignKey: 'restaurant_id' });
+        Order.belongsTo(models.Consumer, { foreignKey: 'consumer_id' });
+    };
+
     return Order;
 };
 
-Restaurant.hasMany(Order, { foreignKey: 'restaurant_id' });
-Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
+//Restaurant.hasMany(Order, { foreignKey: 'restaurant_id' });
+//Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
 
-Consumer.hasMany(Order, { foreignKey: 'consumer_id' });
-Order.belongsTo(Consumer, { foreignKey: 'consumer_id' });
+//Consumer.hasMany(Order, { foreignKey: 'consumer_id' });
+//Order.belongsTo(Consumer, { foreignKey: 'consumer_id' });
