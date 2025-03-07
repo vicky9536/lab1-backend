@@ -2,6 +2,10 @@ const { Dish } = require('../models');
 
 // Create new dish
 exports.createDish = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const { name, description, price, category, restaurantId } = req.body;
         const dish = await Dish.create({
@@ -9,7 +13,7 @@ exports.createDish = async (req, res) => {
             description,
             price,
             category,
-            restaurantId
+            restaurantId: req.session.restaurantId
         });
         res.status(201).json(dish);
     } catch (error) {
@@ -20,12 +24,16 @@ exports.createDish = async (req, res) => {
 
 // Update dish
 exports.updateDish = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const [updated] = await Dish.update(req.body, {
-            where: { id: req.params.id }
+            where: { id: req.params.id, restaurantId: req.session.restaurantId }
         });
         if (updated) {
-            const updatedDish = await Dish.findOne({ where: { id: req.params.id } });
+            const updatedDish = await Dish.findOne({ where: { id: req.params.id, restaurantId: req.session.restaurantId } });
             res.status(200).json(updatedDish);
         } else {
             res.status(404).json({error: "Dish not found"});
@@ -38,12 +46,16 @@ exports.updateDish = async (req, res) => {
 
 // Delete dish
 exports.deleteDish = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const deleted = await Dish.destroy({
-            where: { id: req.params.id }
+            where: { id: req.params.id, restaurantId: req.session.restaurantId }
         });
         if (deleted) {
-            res.status(204).json({message: "Dish deleted"});
+            res.status(200).json({message: "Dish deleted"});
         } else {
             res.status(404).json({error: "Dish not found"});
         }

@@ -2,12 +2,16 @@ const { Order } = require('../models');
 
 // create a new order
 exports.createOrder = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const { restaurantId, consumerId, status, price } = req.body;
+        const { restaurantId, status, price } = req.body;
         const order = await Order.create({
             restaurantId,
-            consumerId,
-            status,
+            consumerId: req.session.consumerId,
+            status: 'New',
             price
         });
         res.status(201).json(order);
@@ -19,12 +23,19 @@ exports.createOrder = async (req, res) => {
 
 // update order status
 exports.updateOrderStatus = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const [updated] = await Order.update(req.body, {
-            where: { id: req.params.id }
+        const { status } = req.body;
+        const [updated] = await Order.update({ status }, {
+            where: { id: req.params.id, restaurantId: req.session.restaurantId }
         });
         if (updated) {
-            const updatedOrder = await Order.findOne({ where: { id: req.params.id } });
+            const updatedOrder = await Order.findOne({ 
+                where: { id: req.params.id, restaurantId: req.session.restaurantId } 
+            });
             res.status(200).json(updatedOrder);
         } else {
             res.status(404).json({error: "Order not found"});

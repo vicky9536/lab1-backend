@@ -25,7 +25,7 @@ exports.restaurantLogin = async (req, res) => {
         const { email, password } = req.body;
         const restaurant = await Restaurant.findOne({ where: { email } });
         if (restaurant && bcrypt.compareSync(password, restaurant.password)) {
-            req.session.restaurant = restaurant;
+            req.session.restaurant = restaurant.id;
             res.status(200).json(restaurant);
         }
     } catch (error) {

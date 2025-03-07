@@ -25,9 +25,10 @@ exports.consumerLogin = async (req, res) => {
         const { email, password } = req.body;
         const consumer = await Consumer.findOne({ where: { email } });
         if (consumer && bcrypt.compareSync(password, consumer.password)) {
-            req.session.consumer = consumer;
+            req.session.consumerId = consumer.id;
             res.status(200).json(consumer);
         }
+
     } catch (error) {
         console.error("Error logging in consumer:", error);
         res.status(500).json({error: error.message});

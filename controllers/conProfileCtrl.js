@@ -17,10 +17,13 @@ exports.viewConProfile = async (req, res) => {
 
 // update consumer profile
 exports.updateConProfile = async (req, res) => {
+    if (!req.session.Consumer) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const consumerId = req.params.id;
         const { name, email, password, state, country } = req.body;
-        const consumer = await Consumer.findByPk(consumerId);
+        const consumer = await Consumer.findByPk(req.session.Consumer.id);
         if (!consumer) {
             return res.status(404).json({error: "Consumer not found"});
         }
@@ -30,6 +33,7 @@ exports.updateConProfile = async (req, res) => {
         consumer.state = state;
         consumer.country = country;
         await consumer.save();
+        req.session.Consumer = { ...req.session.Consumer, name, email, password, state, country };
         res.status(200).json(consumer);
     } catch (error) {
         console.error("Error updating consumer profile:", error);

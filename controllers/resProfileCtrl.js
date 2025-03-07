@@ -16,13 +16,18 @@ exports.viewRestInfo = async (req, res) => {
 
 // Update restaurant info
 exports.updateRestInfo = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const [updated] = await Restaurant.update(req.body, {
-            where: { id: req.params.id }
+            where: { id: req.session.restaurantId }
         });
 
         if (updated) {
-            const updatedRest = await Restaurant.findByPk(req.params.id);
+            const updatedRest = await Restaurant.findByPk(req.session.restaurantId);
+            req.session.restaurant = updatedRest.toJSON();
             res.status(200).json(updatedRest);
         } else {
             res.status(404).json({error: "Restaurant not found"});

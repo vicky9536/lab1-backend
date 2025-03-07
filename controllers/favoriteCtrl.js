@@ -2,8 +2,14 @@ const { Favorite } = require('../models');
 
 // Add a restaurant to favorites
 exports.addFavorite = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const favorite = await Favorite.create(req.body);
+        const favorite = await Favorite.create({
+            consumerId: req.session.consumerId, restaurantId: req.body.restaurantId
+        });
         res.status(201).json(favorite);
     } catch (error) {
         console.error("Error adding favorite:", error);
@@ -13,12 +19,16 @@ exports.addFavorite = async (req, res) => {
 
 // Remove a restaurant from favorites
 exports.removeFavorite = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const deleted = await Favorite.destroy({
-            where: { id: req.params.id }
+            where: { id: req.params.id, consumerId: req.session.consumerId }
         });
         if (deleted) {
-            res.status(204).json({message: "Favorite removed"});
+            res.status(200).json({message: "Favorite removed"});
         } else {
             res.status(404).json({error: "Favorite not found"});
         }
