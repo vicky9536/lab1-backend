@@ -12,7 +12,7 @@ const favoriteRoutes = require('./routes/favoriteRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const resDbRoutes = require('./routes/resDbRoutes');
 const resProfileRoutes = require('./routes/resProfileRoutes');
-const consProfileRoutes = require('./routes/conProfileRoutes');
+const conProfileRoutes = require('./routes/conProfileRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
@@ -36,7 +36,7 @@ app.use('/favorites', favoriteRoutes);
 app.use('/orders', orderRoutes);
 app.use('/resDb', resDbRoutes);
 app.use('/resProfile', resProfileRoutes);
-app.use('/consProfile', consProfileRoutes);
+app.use('/conProfile', conProfileRoutes);
 app.use('/cart', cartRoutes);
 
 // Database connection and sync

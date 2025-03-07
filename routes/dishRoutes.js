@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const dishController = require('../controllers/dishController');
+const dishCtrl = require('../controllers/dishCtrl');
 
-router.post('/create', dishController.createDish);
-router.post('/update/:id', dishController.updateDish);
-router.delete('/delete/:id', dishController.deleteDish);
+router.post('/create', dishCtrl.createDish);
+router.post('/update/:id', dishCtrl.updateDish);
+router.delete('/delete/:id', dishCtrl.deleteDish);
 
 module.exports = router;

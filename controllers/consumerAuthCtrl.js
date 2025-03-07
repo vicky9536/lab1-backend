@@ -6,11 +6,12 @@ const { Consumer } = require('../models');
 // Consumer signup
 exports.consumerSignup = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email } = req.body;
+        const hasedpassword = bcrypt.hashSync(req.body.password, 10);
         const consumer = await Consumer.create({
             name,
             email,
-            password,
+            password: hasedpassword
         });
         res.status(201).json(consumer);
     } catch (error) {
@@ -24,9 +25,11 @@ exports.consumerLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const consumer = await Consumer.findOne({ where: { email } });
-        if (consumer && bcrypt.compareSync(password, consumer.password)) {
+        if (consumer && bcrypt.compare(password, consumer.password)) {
             req.session.consumerId = consumer.id;
             res.status(200).json(consumer);
+        } else {
+            res.status(401).json({error: "Invalid credentials"});
         }
 
     } catch (error) {

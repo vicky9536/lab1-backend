@@ -5,11 +5,12 @@ const { Restaurant } = require('../models');
 // Restaurant signup
 exports.restaurantSignup = async (req, res) => {
     try {
-        const { name, email, password, location } = req.body;
+        const { name, email, location } = req.body;
+        const hasedpassword = bcrypt.hashSync(req.body.password, 10);
         const restaurant = await Restaurant.create({
             name,
             email,
-            password,
+            password: hasedpassword,
             location
         });
         res.status(201).json(restaurant);
@@ -24,8 +25,8 @@ exports.restaurantLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const restaurant = await Restaurant.findOne({ where: { email } });
-        if (restaurant && bcrypt.compareSync(password, restaurant.password)) {
-            req.session.restaurant = restaurant.id;
+        if (restaurant && bcrypt.compare(password, restaurant.password)) {
+            req.session.restaurantId = restaurant.id;
             res.status(200).json(restaurant);
         }
     } catch (error) {

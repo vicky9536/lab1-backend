@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
     class Restaurant extends Model {}
@@ -46,7 +47,15 @@ module.exports = (sequelize, DataTypes) => {
     {
         sequelize,
         modelName: 'Restaurant',
-        tableName: 'restaurants'
+        tableName: 'restaurants',
+        timestamps: false,
+        hooks: {
+            beforeCreate: async (consumer) => {
+                if (consumer.password) {
+                    consumer.password = await bcrypt.hash(consumer.password, 10);
+                }
+            }
+        }
     }
     );
 
