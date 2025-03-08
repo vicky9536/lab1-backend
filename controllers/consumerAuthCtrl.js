@@ -27,6 +27,7 @@ exports.consumerLogin = async (req, res) => {
         const consumer = await Consumer.findOne({ where: { email } });
         if (consumer && bcrypt.compare(password, consumer.password)) {
             req.session.consumerId = consumer.id;
+            console.log("Consumer ID:", req.session.consumerId);
             res.status(200).json(consumer);
         } else {
             res.status(401).json({error: "Invalid credentials"});

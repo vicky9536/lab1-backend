@@ -16,24 +16,27 @@ exports.viewRestInfo = async (req, res) => {
 
 // Update restaurant info
 exports.updateRestInfo = async (req, res) => {
+    console.log("Received request to update restaurant profile:", req.session.restaurantId);
     if (!req.session.restaurantId) {
         return res.status(401).json({error: "Unauthorized"});
     }
 
     try {
-        const [updated] = await Restaurant.update(req.body, {
-            where: { id: req.session.restaurantId }
-        });
-
-        if (updated) {
-            const updatedRest = await Restaurant.findByPk(req.session.restaurantId);
-            req.session.restaurant = updatedRest.toJSON();
-            res.status(200).json(updatedRest);
-        } else {
-            res.status(404).json({error: "Restaurant not found"});
+        const { name, location, description, contact_info, timings } = req.body;
+        const restaurant = await Restaurant.findByPk(req.session.restaurantId);
+        if (!restaurant) {
+            return res.status(404).json({error: "Restaurant not found"});
         }
+        consumer.name = name;
+        consumer.location = location;
+        consumer.description = description;
+        consumer.contact_info = contact_info;
+        consumer.timings = timings;
+        await restaurant.save();
+        req.session.Restaurant = { ...req.session.Restaurant, name, location, description, contact_info, timings };
+        res.status(200).json(restaurant);
     } catch (error) {
-        console.error("Error updating restaurant info:", error);
+        console.error("Error updating restaurant profile:", error);
         res.status(500).json({error: error.message});
     }
 };
