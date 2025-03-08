@@ -7,7 +7,7 @@ exports.createDish = async (req, res) => {
     }
 
     try {
-        const { name, description, price, category, restaurantId } = req.body;
+        const { name, description, price, category } = req.body;
         const dish = await Dish.create({
             name,
             description,

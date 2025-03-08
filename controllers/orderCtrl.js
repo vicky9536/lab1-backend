@@ -7,7 +7,7 @@ exports.createOrder = async (req, res) => {
     }
 
     try {
-        const { restaurantId, status, price } = req.body;
+        const { restaurantId, price } = req.body;
         const order = await Order.create({
             restaurantId,
             consumerId: req.session.consumerId,

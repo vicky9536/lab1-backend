@@ -12,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
+        restaurantId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Restaurants',
+                key: 'id'
+            },
+            field: 'restaurant_id'
+        },
         consumerId: {
             type: DataTypes.INTEGER,
             allowNull: false,

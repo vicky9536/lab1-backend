@@ -1,11 +1,16 @@
 const { Cart } = require('../models');
 const { Consumer } = require('../models');
 const { Dish } = require('../models');
+const { Order } = require('../models');
 
 // review cart
 exports.getCart = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const consumerId = req.session.consumer.id;
+        const consumerId = req.session.consumerId;
         const cartItems = await Cart.findAll({
             where: { consumerId },
             include: [{ model: Dish }]
@@ -19,12 +24,17 @@ exports.getCart = async (req, res) => {
 
 // add dish to cart
 exports.addCart = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
-        const { dishId, quantity } = req.body;
-        const consumerId = req.session.consumer.id;
+        const { dishId, quantity, restaurantId } = req.body;
+        const consumerId = req.session.consumerId;
         const cartItem = await Cart.create({
             dishId,
             quantity,
+            restaurantId,
             consumerId
         });
         res.status(201).json(cartItem);
@@ -36,12 +46,16 @@ exports.addCart = async (req, res) => {
 
 // delete dish from cart
 exports.deleteCart = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
     try {
         const deleted = await Cart.destroy({
             where: { id: req.params.id }
         });
         if (deleted) {
-            res.status(204).json({message: "Dish deleted from cart"});
+            res.status(200).json({message: "Dish deleted from cart"});
         } else {
             res.status(404).json({error: "Dish not found in cart"});
         }
@@ -52,3 +66,38 @@ exports.deleteCart = async (req, res) => {
 };
 
 // checkout
+exports.checkout = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
+    try {
+        const consumerId = req.session.consumerId;
+        const cartItems = await Cart.findAll({
+            where: { consumerId },
+            include: [{ model: Dish }]
+        });
+        console.log("Cart Items:", cartItems);
+
+        const orderItems = cartItems.map(item => ({
+            dishId: item.dishId,
+            name: item.Dish.name,
+            quantity: item.quantity,
+            price: item.Dish.price,
+        }));
+        const totalPrice = cartItems.reduce((total, item) => total + (item.Dish.price * item.quantity), 0);
+
+        const order = await Order.create({
+            consumer_id: consumerId,
+            restaurant_id: cartItems[0].restaurantId,
+            price: totalPrice,
+            status: 'New',
+            items: JSON.stringify(orderItems)
+        });
+        await Cart.destroy({ where: { consumerId } });
+        res.status(200).json(order);
+    } catch (error) {
+        console.error("Error checking out:", error);
+        res.status(500).json({error: error.message});
+    }
+};

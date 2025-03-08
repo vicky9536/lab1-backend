@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             references: {
                 model: 'Consumers',
                 key: 'id'
-            }
+            },
+            field: 'userId'
         },
         restaurantId: {
             type: DataTypes.INTEGER,
@@ -26,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
             references: {
                 model: 'Restaurants',
                 key: 'id'
-            }
+            },
+            field: 'restaurantId'
         }
     },
     {
