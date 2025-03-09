@@ -45,6 +45,7 @@ exports.addCart = async (req, res) => {
 };
 
 // delete dish from cart
+// test
 exports.deleteCart = async (req, res) => {
     if (!req.session.consumerId) {
         return res.status(401).json({error: "Unauthorized"});
