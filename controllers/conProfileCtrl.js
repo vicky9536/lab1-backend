@@ -24,7 +24,7 @@ exports.updateConProfile = async (req, res) => {
     }
 
     try {
-        const { name, email, password, state, country } = req.body;
+        const { name, email, password, state, country, image_url } = req.body;
         const consumer = await Consumer.findByPk(req.session.consumerId);
         if (!consumer) {
             return res.status(404).json({error: "Consumer not found"});
@@ -34,8 +34,9 @@ exports.updateConProfile = async (req, res) => {
         consumer.password = bcrypt.hashSync(req.body.password, 10);
         consumer.state = state;
         consumer.country = country;
+        consumer.image_url = image_url;
         await consumer.save();
-        req.session.Consumer = { ...req.session.Consumer, name, email, password, state, country };
+        req.session.Consumer = { ...req.session.Consumer, name, email, password, state, country, image_url };
         res.status(200).json(consumer);
     } catch (error) {
         console.error("Error updating consumer profile:", error);

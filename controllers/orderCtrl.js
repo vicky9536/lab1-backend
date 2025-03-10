@@ -1,5 +1,23 @@
 const { Order } = require('../models');
 
+// view order
+exports.viewOrder = async (req, res) => {
+    if (!req.session.restaurantId) {
+        return res.status(401).json({error: "Unauthorized"});
+    }
+
+    try {
+        const order = await Order.findAll({
+            where: {restaurantId: req.session.restaurantId}
+        });
+        res.status(200).json(order);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({error: error.message});
+    }
+}
+
+
 // create a new order
 exports.createOrder = async (req, res) => {
     if (!req.session.consumerId) {

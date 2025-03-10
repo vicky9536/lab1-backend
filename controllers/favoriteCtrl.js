@@ -1,5 +1,23 @@
 const { Favorite } = require('../models');
 
+// View the favorite list
+exports.viewFavorite = async (req, res) => {
+    if (!req.session.consumerId) {
+        return res.status(401).json({error: "Unanthorized"})
+    }
+
+    try {
+        const favorite = await Favorite.findAll({
+            where: {consumerId: req.session.consumerId}
+        });
+        res.status(200).json(favorite);
+    } catch (error) {
+        console.error("Error fetching favorite list:", error);
+        res.status(500).json({error: error.message});
+    }
+}
+
+
 // Add a restaurant to favorites
 exports.addFavorite = async (req, res) => {
     if (!req.session.consumerId) {

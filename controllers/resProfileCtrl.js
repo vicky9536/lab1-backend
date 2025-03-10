@@ -22,18 +22,19 @@ exports.updateRestInfo = async (req, res) => {
     }
 
     try {
-        const { name, location, description, contact_info, timings } = req.body;
+        const { name, location, description, contact_info, timings, image_url } = req.body;
         const restaurant = await Restaurant.findByPk(req.session.restaurantId);
         if (!restaurant) {
             return res.status(404).json({error: "Restaurant not found"});
         }
-        consumer.name = name;
-        consumer.location = location;
-        consumer.description = description;
-        consumer.contact_info = contact_info;
-        consumer.timings = timings;
+        restaurant.name = name;
+        restaurant.location = location;
+        restaurant.description = description;
+        restaurant.contact_info = contact_info;
+        restaurant.timings = timings;
+        restaurant.image_url = image_url;
         await restaurant.save();
-        req.session.Restaurant = { ...req.session.Restaurant, name, location, description, contact_info, timings };
+        req.session.Restaurant = { ...req.session.Restaurant, name, location, description, contact_info, timings, image_url };
         res.status(200).json(restaurant);
     } catch (error) {
         console.error("Error updating restaurant profile:", error);

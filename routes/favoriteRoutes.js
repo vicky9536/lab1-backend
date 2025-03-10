@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const favoriteCtrl = require('../controllers/favoriteCtrl');
 
+router.get('/viewFavorite', favoriteCtrl.viewFavorite);
 router.post('/addFavorite', favoriteCtrl.addFavorite);
 router.delete('/removeFavorite/:id', favoriteCtrl.removeFavorite);
 

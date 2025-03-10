@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         country: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        image_url: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     },
     {
